@@ -1,12 +1,14 @@
 import axios from "axios";
 import Head from "next/head";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useZuAuth } from "zuauth";
 
 export default function Home() {
   const { authenticate, pcd } = useZuAuth();
   const [user, setUser] = useState<any>();
+  const router = useRouter();
 
   // Every time the page loads, an API call is made to check if the
   // user is logged in and, if they are, to retrieve the current session's user data.
@@ -42,6 +44,9 @@ export default function Home() {
     (async function () {
       if (pcd) {
         const { data } = await axios.post("/api/login", { pcd });
+        if (data) {
+          router.push("/feed");
+        }
 
         setUser(data.user);
       }
