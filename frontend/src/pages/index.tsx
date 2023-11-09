@@ -45,7 +45,7 @@ export default function Home() {
       if (pcd) {
         const { data } = await axios.post("/api/login", { pcd });
         if (data) {
-          router.push("/feed");
+          router.push("/upload");
         }
 
         setUser(data.user);

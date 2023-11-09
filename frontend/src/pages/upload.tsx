@@ -1,6 +1,6 @@
-import React, { useState, ChangeEvent, SyntheticEvent, useEffect } from "react";
+import React, { useState, ChangeEvent, SyntheticEvent } from "react";
 
-const CsvParser: React.FC = () => {
+export default function CsvParser() {
   const [file, setFile] = useState<File | null>(null);
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -47,19 +47,19 @@ const CsvParser: React.FC = () => {
       };
 
       fileReader.readAsText(file);
-      console.log("CSV File", file);
     }
   };
 
   return (
-    <div className='text-center'>
-      <h1 className='text-red-500 text-3xl font-bold mb-4'>CSV PARSER</h1>
+    <div className='text-center p-8'>
+      <h1 className='text-3xl font-bold text-red-500 mb-4'>CSV PARSER</h1>
       <form>
         <input
           type='file'
           id='csvFileInput'
           accept='.csv'
           onChange={handleOnChange}
+          className='mb-4 p-2 border border-gray-300 rounded'
         />
 
         <button
@@ -73,6 +73,4 @@ const CsvParser: React.FC = () => {
       </form>
     </div>
   );
-};
-
-export default CsvParser;
+}
