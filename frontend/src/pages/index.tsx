@@ -3,7 +3,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { useZuAuth } from "zuauth";
+import { useZuAuth } from "../zuauth";
 
 export default function Home() {
   const { authenticate, pcd } = useZuAuth();

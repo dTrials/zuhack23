@@ -1,9 +1,7 @@
-import { withSessionRoute } from "@/utils/withSession";
-import { ZKEdDSAEventTicketPCDPackage } from "@pcd/zk-eddsa-event-ticket-pcd";
-import { NextApiRequest, NextApiResponse } from "next";
-import { isZupassPublicKey, supportedEvents } from "zuauth";
-
-const nullifiers = new Set<string>();
+import { withSessionRoute } from "@/utils/withSession"
+import { ZKEdDSAEventTicketPCDPackage } from "@pcd/zk-eddsa-event-ticket-pcd"
+import { NextApiRequest, NextApiResponse } from "next"
+import { isZupassPublicKey, supportedEvents } from "../../zuauth"
 
 /**
  * The login checks the validity of the PCD and ensures that the ticket
@@ -53,13 +51,6 @@ export default withSessionRoute(async function (
       return;
     }
 
-    if (nullifiers.has(pcd.claim.nullifierHash)) {
-      console.error(`[ERROR] PCD ticket has already been used`);
-
-      res.status(401).send("PCD ticket has already been used");
-      return;
-    }
-
     const eventId = pcd.claim.partialTicket.eventId;
 
     if (eventId) {
@@ -85,10 +76,6 @@ export default withSessionRoute(async function (
         }
       }
     }
-
-    // The PCD's nullifier is saved so that it prevents the
-    // same PCD from being reused for another login.
-    nullifiers.add(pcd.claim.nullifierHash);
 
     // Save the ticket's data.
     req.session.user = pcd.claim.nullifierHash;
