@@ -17,6 +17,7 @@ export default function Home() {
       const { data } = await axios.get("/api/user");
 
       setUser(data.user);
+      localStorage.setItem("user", JSON.stringify(data.user));
     })();
   }, []);
 
@@ -45,10 +46,11 @@ export default function Home() {
       if (pcd) {
         const { data } = await axios.post("/api/login", { pcd });
         if (data) {
-          router.push("/feed");
+          router.push("/upload");
         }
 
         setUser(data.user);
+        console.log("user", data.user);
       }
     })();
   }, [pcd]);
