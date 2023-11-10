@@ -49,6 +49,7 @@ export default function Home() {
         }
 
         setUser(data.user);
+        console.log("user", data.user);
       }
     })();
   }, [pcd]);

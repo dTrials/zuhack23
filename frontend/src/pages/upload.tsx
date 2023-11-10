@@ -1,4 +1,5 @@
 import React, { useState, ChangeEvent, SyntheticEvent } from "react";
+import { supabase } from "../utils/supabase";
 
 export default function CsvParser() {
   const [file, setFile] = useState<File | null>(null);
@@ -18,7 +19,7 @@ export default function CsvParser() {
       data.push(rowArray);
     }
     const heading = data[0];
-    const ans_array: Record<string, string>[] = [];
+    const record_array: Record<string, string>[] = [];
     for (let i = 1; i < data.length; i++) {
       const row = data[i];
       const obj: Record<string, string> = {};
@@ -29,9 +30,12 @@ export default function CsvParser() {
         const key = heading[j].replaceAll(" ", "_");
         obj[key] = row[j].toString().replaceAll(" ", "_");
       }
-      ans_array.push(obj);
+      if (parseInt(obj.hr) > 0) {
+        console.log("Object has more than 0 as hr", obj);
+        record_array.push(obj);
+      }
     }
-    console.log("CSV in array form", { ans_array });
+    // console.log("CSV in array form", { record_array });
   };
 
   const handleOnSubmit = (e: SyntheticEvent) => {
