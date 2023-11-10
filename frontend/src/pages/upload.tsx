@@ -33,10 +33,22 @@ export default function CsvParser() {
       if (parseInt(obj.hr) > 0) {
         console.log("Object has more than 0 as hr", obj);
         record_array.push(obj);
+        supabaseInsert(obj.hr, obj.date_time);
       }
     }
+
     // console.log("CSV in array form", { record_array });
   };
+
+  async function supabaseInsert(hr: string, date_time: string) {
+    const { data, error } = await supabase
+      .from("hr_data")
+      .insert([{ hr, date_time }])
+      .single();
+
+    console.log("Data", data);
+    console.log("Error", error);
+  }
 
   const handleOnSubmit = (e: SyntheticEvent) => {
     e.preventDefault();

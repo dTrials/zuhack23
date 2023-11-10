@@ -17,6 +17,7 @@ export default function Home() {
       const { data } = await axios.get("/api/user");
 
       setUser(data.user);
+      localStorage.setItem("user", JSON.stringify(data.user));
     })();
   }, []);
 
