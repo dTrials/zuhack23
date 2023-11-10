@@ -52,29 +52,35 @@ export default function CsvParser() {
     const nullifier = localStorage.getItem("user");
     console.log("Nullifier", nullifier);
 
-    if (await userAlreadyUploaded(nullifier)) {
+    const alreadyUploaded = await userAlreadyUploaded(nullifier);
+
+    if (alreadyUploaded) {
       alert("You have already uploaded your data");
-      return;
+      router.push("/data");
+    } else {
+      const { data: hr_data, error } = await supabase
+        .from("hr_data")
+        .insert([{ hr, date_time, nullifier }])
+        .single();
+
+      console.log("Data after inserting", hr_data);
+      console.log("Error", error);
     }
-
-    const { data: hr_data, error } = await supabase
-      .from("hr_data")
-      .insert([{ hr, date_time, nullifier }])
-      .single();
-
-    console.log("Data after inserting", hr_data);
-    console.log("Error", error);
   }
 
   async function userAlreadyUploaded(nullifier: string | null) {
+    console.log("Checking if user already uploaded: ", nullifier);
+
     let { data: hr_data, error } = await supabase
       .from("hr_data")
-      .select("nullifier");
+      .select("nullifier")
+      .eq("nullifier", nullifier);
 
-    console.log("Data", hr_data);
+    console.log("Data from table", hr_data);
     console.log("Error", error);
 
     if (hr_data && hr_data.length > 0) {
+      console.log("User already uploaded");
       return true;
     }
 
