@@ -17,7 +17,6 @@ export default function Home() {
       const { data } = await axios.get("/api/user");
 
       setUser(data.user);
-      localStorage.setItem("user", JSON.stringify(data.user));
     })();
   }, []);
 
@@ -50,7 +49,8 @@ export default function Home() {
         }
 
         setUser(data.user);
-        console.log("user", data.user);
+        console.log("User from login", data.user);
+        localStorage.setItem("user", JSON.stringify(data.user));
       }
     })();
   }, [pcd]);

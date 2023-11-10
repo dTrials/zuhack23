@@ -1,8 +1,16 @@
-import React, { useState, ChangeEvent, SyntheticEvent } from "react";
+import React, {
+  useState,
+  ChangeEvent,
+  SyntheticEvent,
+  useCallback,
+} from "react";
 import { supabase } from "../utils/supabase";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function CsvParser() {
   const [file, setFile] = useState<File | null>(null);
+  const router = useRouter();
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files && e.target.files[0];
@@ -31,7 +39,7 @@ export default function CsvParser() {
         obj[key] = row[j].toString().replaceAll(" ", "_");
       }
       if (parseInt(obj.hr) > 0) {
-        console.log("Object has more than 0 as hr", obj);
+        // console.log("Object has more than 0 as hr", obj);
         record_array.push(obj);
         supabaseInsert(obj.hr, obj.date_time);
       }
@@ -41,9 +49,12 @@ export default function CsvParser() {
   };
 
   async function supabaseInsert(hr: string, date_time: string) {
+    const nullifier = localStorage.getItem("user");
+    console.log("Nullifier", nullifier);
+
     const { data, error } = await supabase
       .from("hr_data")
-      .insert([{ hr, date_time }])
+      .insert([{ hr, date_time, nullifier }])
       .single();
 
     console.log("Data", data);
@@ -66,8 +77,19 @@ export default function CsvParser() {
     }
   };
 
+  const logout = useCallback(async () => {
+    await axios.post("/api/logout");
+    router.push("/");
+  }, []);
+
   return (
     <div className='text-center p-8'>
+      <button
+        className='bg-blue-800 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded'
+        onClick={logout}
+      >
+        Log out
+      </button>
       <h1 className='text-3xl font-bold text-red-500 mb-4'>CSV PARSER</h1>
       <form>
         <input

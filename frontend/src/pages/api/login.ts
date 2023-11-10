@@ -92,6 +92,7 @@ export default withSessionRoute(async function (
 
     // Save the ticket's data.
     req.session.user = pcd.claim.nullifierHash;
+    console.log(`[INFO] User ${req.session.user} logged in`);
 
     await req.session.save();
 
