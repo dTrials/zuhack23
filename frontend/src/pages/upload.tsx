@@ -19,7 +19,7 @@ export default function CsvParser() {
     }
   };
 
-  const csvFileToArray = (string: string) => {
+  async function csvFileToArray(string: string) {
     const array = string.split("\n");
     const data: string[][] = [];
     for (const row of array) {
@@ -41,31 +41,32 @@ export default function CsvParser() {
       if (parseInt(obj.hr) > 0) {
         // console.log("Object has more than 0 as hr", obj);
         record_array.push(obj);
-        supabaseInsert(obj.hr, obj.date_time);
       }
+
+      if (await userAlreadyUploaded(obj.nullifier)) {
+        alert("You've already uploaded data");
+      } else {
+        record_array.forEach((element) => {
+          supabaseInsert(element?.hr, element?.date_time);
+        });
+      }
+      router.push("/data");
     }
 
     // console.log("CSV in array form", { record_array });
-  };
+  }
 
   async function supabaseInsert(hr: string, date_time: string) {
     const nullifier = localStorage.getItem("user");
     console.log("Nullifier", nullifier);
 
-    const alreadyUploaded = await userAlreadyUploaded(nullifier);
+    const { data: hr_data, error } = await supabase
+      .from("hr_data")
+      .insert([{ hr, date_time, nullifier }])
+      .single();
 
-    if (alreadyUploaded) {
-      alert("You have already uploaded your data");
-      router.push("/data");
-    } else {
-      const { data: hr_data, error } = await supabase
-        .from("hr_data")
-        .insert([{ hr, date_time, nullifier }])
-        .single();
-
-      console.log("Data after inserting", hr_data);
-      console.log("Error", error);
-    }
+    console.log("Data after inserting", hr_data);
+    console.log("Error", error);
   }
 
   async function userAlreadyUploaded(nullifier: string | null) {
